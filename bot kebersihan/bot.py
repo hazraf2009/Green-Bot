@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-from discord.ui import Button, View
 from main import get_fact, get_contoh, get_info, get_tips
 import random
 
@@ -51,82 +50,20 @@ async def tips(ctx, loop = 1):
     """Memberikan pengertian dari jenis sampah."""
     await ctx.send(get_tips(loop))
 
+jawaban = ""
 
-# masih belajar belum bisa dibilang sempurna(coba-coba)
-jumlah_soal = 0
-betul = 0
-salah = 0
-sampah_acak = random.choice(list(jenis_sampah.values()))
-item_sampah_acak = random.choice(sampah_acak)
 @bot.command()
 async def sortir(ctx):
+    global jawaban
     """Memberikan pertanyaan tentang jenis sampah"""
-    
-    
-    
-    async def button_callback(interaction: discord.Interaction):
-        global jumlah_soal, betul, salah, sampah_acak, item_sampah_acak
-        custom_id = interaction.data["custom_id"]
-        
-        if custom_id == "anorganik" and item_sampah_acak in jenis_sampah["Anorganik"]:
-            await interaction.response.edit_message(content="Benar! Ini adalah sampah Anorganik.")
-            
-            jumlah_soal += 1
-            betul += 1
-            sampah_acak = random.choice(list(jenis_sampah.values()))
-            item_sampah_acak = random.choice(sampah_acak)
-
-            await interaction.followup.send(f"**{item_sampah_acak}** merupakan sampah jenis apa?", view=view)
-            
-        elif custom_id == "organik" and item_sampah_acak in jenis_sampah["Organik"]:
-            await interaction.response.edit_message(content="Benar! Ini adalah sampah Organik.")
-            
-            jumlah_soal += 1
-            betul += 1
-            sampah_acak = random.choice(list(jenis_sampah.values()))
-            item_sampah_acak = random.choice(sampah_acak)
-
-            await interaction.followup.send(f"**{item_sampah_acak}** merupakan sampah jenis apa?", view=view)
-            
-        elif custom_id == "b3" and item_sampah_acak in jenis_sampah["B3"]:
-            await interaction.response.edit_message(content="Benar! Ini adalah sampah B3.")
-             
-            jumlah_soal += 1
-            betul += 1
-            sampah_acak = random.choice(list(jenis_sampah.values()))
-            item_sampah_acak = random.choice(sampah_acak)
-
-            await interaction.followup.send(f"**{item_sampah_acak}** merupakan sampah jenis apa?", view=view)
-        
-        elif custom_id == "keluar":
-            await interaction.response.send_message(f"**Scoremu :**\n**Jumlah Soal :** {jumlah_soal}\n**Betul :** {betul}\n**Salah :** {salah}")
-           
-        else:
-            await interaction.response.edit_message(content="Salah! Coba lagi.")
-            
-            jumlah_soal += 1
-            salah += 1
-            sampah_acak = random.choice(list(jenis_sampah.values()))
-            item_sampah_acak = random.choice(sampah_acak)
-
-            await interaction.followup.send(f"**{item_sampah_acak}** merupakan sampah jenis apa?", view=view)
-    
-    button_anorganik = Button(label="Anorganik", custom_id="anorganik")
-    button_organik = Button(label="Organik", style=discord.ButtonStyle.green, custom_id="organik")
-    button_b3 = Button(label="B3", style=discord.ButtonStyle.red, custom_id="b3")
-    button_keluar = Button(label="Keluar", emoji="❌", custom_id="keluar")
-    
-    button_anorganik.callback = button_callback
-    button_organik.callback = button_callback
-    button_b3.callback = button_callback
-    button_keluar.callback = button_callback
-
-    view = View()
-    view.add_item(button_anorganik)
-    view.add_item(button_organik)
-    view.add_item(button_b3)
-    view.add_item(button_keluar)
-    
-    await ctx.send(f"**{item_sampah_acak}** merupakan sampah jenis apa?", view=view)
+    sampah_acak = random.choice(list(jenis_sampah.values()))
+    item_sampah_acak = random.choice(sampah_acak)
+    if item_sampah_acak in jenis_sampah["Anorganik"]:
+        jawaban = "Anorganik"
+    elif item_sampah_acak in jenis_sampah["Organik"]:
+        jawaban = "Organik"
+    else:
+        jawaban = "B3"
+    await ctx.send(f"**{item_sampah_acak}** merupakan sampah jenis apa ?\n\nJawabannya ==> ||       {jawaban}       ||")
 
 bot.run(token)
